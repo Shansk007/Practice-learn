@@ -4,7 +4,7 @@ pipeline {
     stages {
         stage('Build') {
             steps {
-                echo 'Building the project... hello 1234455'
+                echo 'Building the project... hello 123445566'
             }
         }
 
