@@ -5,7 +5,7 @@ pipeline {
         stage('System Update') {
             steps {
                 echo 'Updating system packages...'
-                sh 'sudo apt update'
+                sh ' apt update'
             }
         }
 
