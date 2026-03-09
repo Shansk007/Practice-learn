@@ -2,12 +2,7 @@ pipeline {
     agent any
 
     stages {
-        stage('System Update') {
-            steps {
-                echo 'Updating system packages...'
-                sh ' apt update'
-            }
-        }
+        
 
         stage('Check System Status') {
             steps {
