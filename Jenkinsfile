@@ -10,7 +10,7 @@ pipeline {
 
         stage('Test') {
             steps {
-                echo 'Running tests...'
+                echo 'Running tests...  so now running fine'
             }
         }
 
