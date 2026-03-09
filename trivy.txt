@@ -1,0 +1,22 @@
+sudo apt update
+sudo apt install wget apt-transport-https gnupg lsb-release -y
+
+wget -qO - https://aquasecurity.github.io/trivy-repo/deb/public.key | sudo apt-key add -
+
+echo deb https://aquasecurity.github.io/trivy-repo/deb $(lsb_release -sc) main | sudo tee /etc/apt/sources.list.d/trivy.list
+
+sudo apt update
+sudo apt install trivy -y
+
+trivy --version
+
+----------------
+
+stage('Trivy Scan') {
+            steps {
+                echo "Scanning image with Trivy"
+                sh """
+                trivy image --severity HIGH,CRITICAL --no-progress ${IMAGE_NAME}:${IMAGE_TAG}
+                """
+            }
+}
