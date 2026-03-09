@@ -2,7 +2,7 @@ pipeline {
     agent any
 
     environment {
-        AWS_REGION = 'au-east-1'
+        AWS_REGION = 'us-east-1'
         ECR_REGISTRY = '416851286705.dkr.ecr.us-east-1.amazonaws.com/shan/image'
         ECR_REPO = 'shan/image'
         IMAGE_TAG = "${BUILD_NUMBER}"
