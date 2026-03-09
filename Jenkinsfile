@@ -1,47 +1,68 @@
 pipeline {
     agent any
 
+    environment {
+        AWS_REGION = 'au-east-1'
+        ECR_REPO = '416851286705.dkr.ecr.us-east-1.amazonaws.com/shan/image'
+        IMAGE_TAG = "${BUILD_NUMBER}"
+    }
+
     stages {
-        
 
-        stage('Check System Status') {
+        stage('Clean Workspace') {
             steps {
-                echo 'Checking uptime...'
-                sh 'uptime'
-                
-                echo 'Checking current date...'
-                sh 'date'
+                cleanWs()
             }
         }
 
-        stage('Build') {
+        stage('Checkout Code') {
             steps {
-                echo 'Building the project... hello 123445566'
+                git branch: 'main', url: 'https://github.com/Shansk007/Practice-learn.git'
             }
         }
 
-        stage('Test') {
+        stage('Docker Build') {
             steps {
-                echo 'Running tests... so now running fine'
+                echo "Building Docker Image"
+                sh """
+                docker build -t my-app:${IMAGE_TAG} .
+                docker tag my-app:${IMAGE_TAG} ${ECR_REPO}:${IMAGE_TAG}
+                """
             }
         }
 
-        stage('Deploy') {
+        stage('Login to AWS ECR') {
             steps {
-                echo 'Deploying application...'
+                echo "Logging into ECR"
+                sh """
+                aws ecr get-login-password --region ${AWS_REGION} | \
+                docker login --username AWS --password-stdin ${ECR_REPO}
+                """
             }
         }
+
+        stage('Push Image to ECR') {
+            steps {
+                echo "Pushing image to ECR"
+                sh """
+                docker push ${ECR_REPO}:${IMAGE_TAG}
+                """
+            }
+        }
+
     }
 
     post {
         success {
-            echo 'Pipeline finished successfully!'
+            echo "Docker image pushed to ECR successfully"
         }
+
         failure {
-            echo 'Pipeline failed.'
+            echo "Pipeline failed"
         }
+
         always {
-            echo 'Cleaning workspace...'
+            echo "Cleaning workspace"
             cleanWs()
         }
     }
